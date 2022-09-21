@@ -1,0 +1,9 @@
+<title>Home</title>
+<body>
+    <h3>Minhas Fichas</h3>
+    <hr>
+    {{#each sheet}}
+        <li><a href="/minha-ficha/{{id}}">{{name}}</a></li>
+    {{/each}}<br>
+    <li><a href="/cadastra-ficha">Criar nova ficha</a></li>
+</body>

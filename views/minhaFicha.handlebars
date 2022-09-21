@@ -1,0 +1,251 @@
+<head>
+    <title>Ficha {{sheet.name}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+            <script src="/funcao.js"></script>
+    {{!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> --}}
+    <style>
+        {box-sizing: border-box;}
+
+        /* Button used to open the contact form - fixed at the bottom of the page */
+        .open-button {
+            background-color: #555;
+            color: white;
+            padding: 16px 20px;
+            border: none;
+            cursor: pointer;
+            opacity: 0.8;
+            position: fixed;
+        }
+
+        /* The popup form - hidden by default */
+        .form-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);S
+            margin: auto;
+            border: 3px solid #f1f1f1;
+            z-index: 9;
+        }
+
+        /* Add styles to the form container */
+        .form-container {
+            max-width: 500px;
+            padding: 10px;
+            background-color: white;
+        }
+
+        /* Full-width input fields */
+        .form-container input[type=text], .form-container input[type=password] {
+            width: 100%;
+            padding: 5px;
+            margin: 5px 0 10px 0;
+            border: none;
+            background: #f1f1f1;
+        }
+
+        /* When the inputs get focus, do something */
+        .form-container input[type=text]:focus, .form-container input[type=password]:focus {
+            background-color: #ddd;
+            outline: none;
+        }
+
+        /* Set a style for the submit/login button */
+        .form-container .btn {
+            background-color: #04AA6D;
+            color: white;
+            padding: 16px 20px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom:10px;
+            opacity: 0.8;
+        }
+
+        /* Add a red background color to the cancel button */
+        .form-container .cancel {
+            background-color: red;
+        }
+
+        /* Add some hover effects to buttons */
+        .form-container .btn:hover, .open-button:hover {
+            opacity: 1;
+        }
+
+        .column {
+           float: left;
+            width: 33.33%;
+        }
+    </style>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Create three equal columns that floats next to each other */
+        .column {
+            float: left;
+            width: 50%;
+            padding: 25px;
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        /* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
+        @media screen and (max-width: 600px) {
+            .column {
+                width: 100%;
+            }
+        }
+
+        input[type='number']{
+            width: 60px;
+        }
+    </style>
+</head>
+<body>
+    <h3>Ficha&nbsp;{{sheet.name}}</h3>
+    <input type="text" id="sheetId" value="{{sheet.id}}" hidden></p>
+    <hr>
+    <div class="row">
+
+        <div class="column">
+            <b>Pontos de Vida&nbsp;</b>
+            <div id="result">
+                <button id="btn-sub">-</button>
+                <input id="hp-value" type="number" name="pv" placeholder="0" min="0">
+                <button id="btn-add">+</button>
+            </div>
+            <div>{{status.current_hp}} / {{status.max_hp}}</div>
+            <br>
+
+        </div>
+
+        <div class="column">
+            <b>Nome:&nbsp;</b>
+            <div>{{sheet.name}}</div>
+            <br>
+            <b>Clã:&nbsp;</b>
+            <div>{{sheet.clan}}</div>
+            <br>
+            <b>Origem:&nbsp;</b>
+            <div>{{sheet.origin}}</div>
+            <br>
+            <b>Aspecto:&nbsp;</b>
+            <div>{{sheet.aspect}}</div>
+            <br>
+            <b>Classe:&nbsp;</b>
+            <div>{{sheet.class}}</div>
+            <br>
+            <b>Nível:&nbsp;</b>
+            <div>{{sheet.level}}</div>
+            <br>
+            <b>Idiomas:&nbsp;</b>
+            <div>{{sheet.language}}</div>
+            <br>
+            <b>Descrição:&nbsp;</b>
+            <div>{{sheet.description}}</div>
+            <br>
+            <b>Anotações:&nbsp;</b>
+            <div>{{sheet.notes}}</div>
+            <br>
+            <button id="open-form" class="open-button" onclick="openForm()">Open Form</button>
+
+            <div id="myForm" class="form-popup">
+                <form id="form-edit" class="form-container" action="/minha-ficha/{{sheet.id}}?_method=PUT" method="POST">
+                    <h1>Geral</h1>
+
+                    <label for="name"><b>Nome</b></label>
+                    <input type="text" value="{{sheet.name}}" name="name" required disabled>
+
+                    <label for="clan"><b>Clã</b></label>
+                    <input type="text" value="{{sheet.clan}}" name="clan" required disabled>
+
+                    <label for="origin"><b>Origem</b></label>
+                    <input type="text" value="{{sheet.origin}}" name="origin" required disabled>
+
+                    <label for="aspect">Aspecto</label><br>
+                    <select id="aspect" name="aspect" disabled>
+                        <option value="none" selected>Nenhum</option>
+                        <option value="dermossa">Dermossa</option>
+                        <option value="dianceth">Dianceth</option>
+                        <option value="sahari">Sahari</option>
+                        <option value="shenghuo">Sheng-Huo</option>
+                        <option value="ulfihild">Ulfihild</option>
+                    </select><br>
+                    <script type="text/javascript">
+                        const theAspect = '{{sheet.aspect}}'
+                        const aspects = ['dermossa', 'dianceth', 'sahari', 'shenghuo', 'ulfihild']
+                        var select = document.getElementById('aspect');
+
+                        if ( theAspect != 'none' ) {
+                            for(var i = 0; i < select.options.length; i++) {
+                                if( select.options[i].value == theAspect ) {
+                                    select.selectedIndex = i
+                                }
+                            }
+                        } else {
+                            select.selectedIndex = 0
+                        }
+                    </script>
+
+                    <label for="class"><b>Classe</b></label>
+                    <input type="text" value="{{sheet.class}}" name="class" required disabled>
+
+                    <label for="level"><b>Nível</b></label><br>
+                    <input type="number" value="{{sheet.level}}" name="level" required disabled>
+                    <br>
+                    <label for="language"><b>Idiomas</b></label>
+                    <input type="text" value="{{sheet.language}}" name="language" required disabled>
+
+                    <label for="description"><b>Descrição</b></label>
+                    <input type="text" value="{{sheet.description}}" name="description" disabled>
+
+                    <label for="notes"><b>Anotações</b></label>
+                    <input type="text" placeholder="Anotações..." value="{{sheet.notes}}" name="notes" disabled>
+
+                    <button id="save-edit" type="submit" class="btn" disabled>Salvar</button>
+                    <button id="close-form" type="button" class="btn cancel" onclick="closeForm()" disabled>Cancelar</button>
+                </form>
+                <script></script>
+            </div>
+            <script>
+                function openForm() {
+                    document.getElementById("myForm").style.display = "block";
+                }
+
+                function closeForm() {
+                    document.getElementById("myForm").style.display = "none";
+                }
+
+                var form = document.forms[0],
+                btn1 = document.getElementById('open-form'),
+                btn2 = document.getElementById('close-form')
+
+                btn1.addEventListener('click', lockForm)
+                btn2.addEventListener('click', lockForm)
+
+                function lockForm(){
+                    btn1.classList.toggle('on');
+                    [].slice.call( form.elements ).forEach(function(item){
+                        item.disabled = !item.disabled;
+                    });
+                }
+
+
+
+            </script>
+        </div>
+
+    </div>
+
+</body>
