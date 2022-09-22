@@ -86,7 +86,6 @@ const Shield = require('./models/shield')
       // method-override
       app.use(express.static('public'))
       app.use(methodOverride('_method'))
-      
 
 // ROTAS
 
@@ -216,6 +215,17 @@ const Shield = require('./models/shield')
     }
   })
 
+app.post('/editHP', async (req, res) => {
+
+  const id = req.body.id;
+
+  const results = await Status.findOne({ where: {id_sheet: id}})
+
+  res.json({
+    data: results
+  })
+
+})
 
   // Gets
 
@@ -234,11 +244,9 @@ const Shield = require('./models/shield')
           sheetData.push(element.dataValues)
         })
       })
-
       res.render('home', { session: req.session, sheet: sheetData })
     }
   });
-
 
   app.get('/minha-ficha/:id', async (req, res, next) => {
     var skill
@@ -251,7 +259,6 @@ const Shield = require('./models/shield')
       const status = await Status.findOne({ where: { id_sheet: sheet.id } })
       res.render('minhaFicha', {
           sheet: sheet,
-          status: status,
           session: req.session
         })
     } catch {
@@ -319,12 +326,10 @@ const Shield = require('./models/shield')
     res.redirect('/login')
   })
 
-
   // Put
 
   app.put('/minha-ficha/:id', async (req, res) => {
     let sheet
-    console.log('PASSOU')
 
     try {
       sheet = await Sheet.findByPk(req.params.id)
@@ -361,6 +366,8 @@ const Shield = require('./models/shield')
       }
     }
   })
+
+
 
   /**
    * POST => Inserir um dado

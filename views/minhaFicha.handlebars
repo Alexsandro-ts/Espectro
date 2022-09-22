@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-            <script src="/funcao.js"></script>
+    <script src="/funcao.js"></script>
     {{!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> --}}
     <style>
         {box-sizing: border-box;}
@@ -121,14 +121,36 @@
         <div class="column">
             <b>Pontos de Vida&nbsp;</b>
             <div id="result">
-                <button id="btn-sub">-</button>
-                <input id="hp-value" type="number" name="pv" placeholder="0" min="0">
-                <button id="btn-add">+</button>
+                <input id="hp-value" type="number" name="pv" placeholder="0">
+                <button id="clac">Clacular</button>
+                <div class="hp"></div>
             </div>
-            <div>{{status.current_hp}} / {{status.max_hp}}</div>
             <br>
-
         </div>
+        <script>
+            $(document).ready(function () {
+                loadHP()
+                function loadHP() {
+                    $.ajax({
+                        type: "POST",
+                        dataType: "JSON",
+                        url: "/editHP",
+                        data: {id: '{{sheet.id}}'},
+                        success: function (data) {
+                            var html = ''
+
+                            html = '<div>'+ data.data.current_hp +' / '+ data.data.max_hp +'</div>'
+
+                            $('div.hp').html(html)
+                        }
+                    })
+                }
+
+                $("#calc").click(function () {
+                    editHP($("#hp-value").val())
+                })
+            })
+        </script>
 
         <div class="column">
             <b>Nome:&nbsp;</b>
@@ -216,7 +238,6 @@
                     <button id="save-edit" type="submit" class="btn" disabled>Salvar</button>
                     <button id="close-form" type="button" class="btn cancel" onclick="closeForm()" disabled>Cancelar</button>
                 </form>
-                <script></script>
             </div>
             <script>
                 function openForm() {
@@ -240,9 +261,6 @@
                         item.disabled = !item.disabled;
                     });
                 }
-
-
-
             </script>
         </div>
 

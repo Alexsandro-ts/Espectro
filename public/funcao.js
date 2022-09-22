@@ -1,13 +1,10 @@
 $(function() {
     const sheetId = $('#sheetId').val()
 
-    $('#btn-add').on("click", function() {
+    $('#calc').on("click", function() {
         calculeHP(1, $('#hp-value').val())
     })
 
-    $('#btn-sub').on("click", function() {
-        calculeHP(1, $('#hp-value').val())
-    })
 
     $.ajax({
         url: `/minha-ficha/${sheetId}`,
@@ -20,8 +17,8 @@ $(function() {
 
 })
 
-function calculeHP(operation, value) {
-    alert('Operation: '+ operation +'. Value: '+ value)
+function calculeHP(value) {
+    alert('Value: '+ value)
 }
 
 
