@@ -27,11 +27,13 @@ const Status = database.define('Status', {
 
     land_speed: Sequelize.FLOAT,
 
+    climb_speed: Sequelize.FLOAT,
+
     excavate_speed: Sequelize.FLOAT,
 
     swim_speed: Sequelize.FLOAT,
 
-    fly_strength: Sequelize.FLOAT,
+    fly_speed: Sequelize.FLOAT,
 
     class_cd: Sequelize.INTEGER,
 

@@ -92,6 +92,12 @@
             padding: 25px;
         }
 
+        .sub-column {
+            float: left;
+            width: 15%;
+            padding: 10px;
+        }
+
         /* Clear floats after the columns */
         .row:after {
             content: "";
@@ -112,104 +118,197 @@
     </style>
 </head>
 <body>
-    <h3>Ficha&nbsp;{{sheet.name}}</h3>
+    <h3>Ficha:&nbsp;{{sheet.name}}</h3>
     <input type="text" id="sheetId" value="{{sheet.id}}" hidden></p>
     <hr>
     <div class="row">
-
+        {{!-- Status --}}
         <div class="column">
-            <b>Pontos de Vida</b>
-            <div id="result">
-                <input id="hp-value" type="number" name="hp" value="0">
-                <button id="calc-hp">Calcular</button>
-                <div class="hp"></div>
-                <script>
-                    $(document).ready(() => {
-                        loadHP()
-                    })
-                    function loadHP() {
-                        $.ajax({
-                            type: "POST",
-                            dataType: "JSON",
-                            url: "/loadHP",
-                            data: {id: '{{sheet.id}}'},
-                            success: (data) => {
-                                var html = ''
-
-                                html = '<div>'+ data.data.current_hp +' / '+ data.data.max_hp +'</div>'
-
-                                $('div.hp').html(html)
-                            }
+            {{!-- Pontos de Vida e Pontos de Mana --}}
+            <div class="row">
+                <div id="result" class="sub-column">
+                    <b>Pontos de Vida</b><br>
+                    <input id="hp-value" type="number" name="hp" value="0">
+                    <button id="calc-hp">Calcular</button>
+                    <div class="hp"></div>
+                    <script>
+                        $(document).ready(() => {
+                            loadHP()
                         })
-                    }
+                        function loadHP() {
+                            $.ajax({
+                                type: "POST",
+                                dataType: "JSON",
+                                url: "/loadHP",
+                                data: {id: '{{sheet.id}}'},
+                                success: (data) => {
+                                    var html = ''
 
-                    function editHP(value) {
-                        $.ajax({
-                            type: 'PUT',
-                            dataType: 'JSON',
-                            url: '/editHP',
-                            data: {id: '{{sheet.id}}', value: value},
-                            success: (data) => {
-                                console.log(data.data)
-                                loadHP()
-                            }
+                                    html = '<div>'+ data.data.current_hp +' / '+ data.data.max_hp +'</div>'
+
+                                    $('div.hp').html(html)
+                                }
+                            })
+                        }
+
+                        function editHP(value) {
+                            $.ajax({
+                                type: 'PUT',
+                                dataType: 'JSON',
+                                url: '/editHP',
+                                data: {id: '{{sheet.id}}', value: value},
+                                success: (data) => {
+                                    console.log(data.data)
+                                    loadHP()
+                                }
+                            })
+                        }
+
+                        $("#calc-hp").click(() => {
+                            editHP($("#hp-value").val())
+                            document.getElementById('hp-value').value = '0'
                         })
-                    }
 
-                    $("#calc-hp").click(() => {
-                        editHP($("#hp-value").val())
-                        document.getElementById('hp-value').value = '0'
-                    })
+                    </script>
+                </div>
+                <div id="result" class="sub-column">
+                    <b>Pontos de Mana</b><br>
+                    <input id="mp-value" type="number" name="mp" placeholder="0">
+                    <button id="calc-mp">Calcular</button>
+                    <div class="mp"></div>
+                    <script>
+                        $(document).ready(function () {
+                            loadMP()
+                        })
+                        function loadMP() {
+                            $.ajax({
+                                type: "POST",
+                                dataType: "JSON",
+                                url: "/loadMP",
+                                data: {id: '{{sheet.id}}'},
+                                success: function (data) {
+                                    var html = ''
 
-                </script>
+                                    html = '<div>'+ data.data.current_mp +' / '+ data.data.max_mp +'</div>'
+
+                                    $('div.mp').html(html)
+                                }
+                            })
+                        }
+
+                        function editMP(value) {
+                            $.ajax({
+                                type: 'PUT',
+                                dataType: 'JSON',
+                                url: '/editMP',
+                                data: {id: '{{sheet.id}}', value: value},
+                                success: (data) => {
+                                    console.log(data.data)
+                                    loadMP()
+                                }
+                            })
+                        }
+
+                        $("#calc-mp").click(() => {
+                            editMP($("#mp-value").val())
+                            document.getElementById("mp-value").value = '0'
+                        })
+                    </script>
+                </div>
             </div>
-            <b>Pontos de Mana</b>
-            <div id="result">
-                <input id="mp-value" type="number" name="mp" placeholder="0">
-                <button id="calc-mp">Calcular</button>
-                <div class="mp"></div>
-                <script>
-                    $(document).ready(function () {
-                        loadMP()
-                    })
-                    function loadMP() {
-                        $.ajax({
-                            type: "POST",
-                            dataType: "JSON",
-                            url: "/loadMP",
-                            data: {id: '{{sheet.id}}'},
-                            success: function (data) {
-                                var html = ''
-
-                                html = '<div>'+ data.data.current_mp +' / '+ data.data.max_mp +'</div>'
-
-                                $('div.mp').html(html)
-                            }
-                        })
-                    }
-
-                    function editMP(value) {
-                        $.ajax({
-                            type: 'PUT',
-                            dataType: 'JSON',
-                            url: '/editMP',
-                            data: {id: '{{sheet.id}}', value: value},
-                            success: (data) => {
-                                console.log(data.data)
-                                loadMP()
-                            }
-                        })
-                    }
-
-                    $("#calc-mp").click(() => {
-                        editMP($("#mp-value").val())
-                        document.getElementById("mp-value").value = '0'
-                    })
-                </script>
+            {{!-- Tamanho e Alcance --}}
+            <div class="row">
+                <div class="sub-column">
+                    <b>Tamanho</b><br>
+                    <div>{{status.size}}</div>
+                </div>
+                <div class="sub-column">
+                    <b>Alcance</b>
+                    <div>{{status.reach}}</div>
+                </div>
+            </div>
+            <b>Velocidades</b>
+            <div class="row">
+                <div class="sub-column">
+                    <div>Em Terra:&nbsp;{{status.land_speed}}</div>
+                    <div>Escalada:&nbsp;{{status.climb_speed}}</div>
+                </div>
+                <div class="sub-column">
+                    <div>Natação:&nbsp;{{status.swim_speed}}</div>
+                    <div>Voo:&nbsp;{{status.fly_speed}}</div>
+                </div>
+            </div>
+            {{!-- CD de Classe, Sobrecarga e Percepção --}}
+            <div class="row">
+                <div class="sub-column">
+                    <b>CD de Classe</b>
+                    <div>{{status.class_cd}}</div>
+                </div>
+                <div class="sub-column">
+                    <b>Sobrecarga</b>
+                    <div>{{status.overload}}</div>
+                </div>
+                <div class="sub-column">
+                    <b>Percepção</b>
+                    <div>{{status.perception}}</div>
+                </div>
+            </div>
+            {{!-- Defesa --}}
+            <div class="row">
+                <div class="sub-column">
+                    <b>Defesa</b>
+                    <div>{{status.defense}}</div>
+                </div>
+                <div class="sub-column">
+                    <b>Bônus de Defesa</b>
+                    <div>{{status.defense_bonus}}</div>
+                </div>
+            </div>
+            {{!-- Atributos --}}
+            <div class="row">
+                <div class="sub-column">
+                    <b>FOR</b>
+                    <div>{{status.str}}</div>
+                </div>
+                <div class="sub-column">
+                    <b>DES</b>
+                    <div>{{status.dex}}</div>
+                </div>
+                <div class="sub-column">
+                    <b>CON</b>
+                    <div>{{status.con}}</div>
+                </div>
+                <div class="sub-column">
+                    <b>INT</b>
+                    <div>{{status.int}}</div>
+                </div>
+                <div class="sub-column">
+                    <b>SAB</b>
+                    <div>{{status.wis}}</div>
+                </div>
+                <div class="sub-column">
+                    <b>CAR</b>
+                    <div>{{status.cha}}</div>
+                </div>
+            </div>
+            {{!-- Salvamentos --}}
+            <div class="row">
+                <div class="sub-column">
+                    <b>Fortitude</b>
+                    <div>{{status.fortitude}}</div>
+                </div>
+                <div class="sub-column">
+                    <b>Reflexos</b>
+                    <div>{{status.reflex}}</div>
+                </div>
+                <div class="sub-column">
+                    <b>Vontade</b>
+                    <div>{{status.will}}</div>
+                </div>
             </div>
             <br>
         </div>
-
+        {{!-- Sheet --}}
         <div class="column">
             <b>Nome:&nbsp;</b>
             <div>{{sheet.name}}</div>
@@ -238,7 +337,7 @@
             <b>Anotações:&nbsp;</b>
             <div>{{sheet.notes}}</div>
             <br>
-            <button id="open-form" class="open-button" onclick="openForm()">Open Form</button>
+            <button id="form-sheet" class="open-button" onclick="openForm()">Open Form</button>
 
             <div id="myForm" class="form-popup">
                 <form id="form-edit" class="form-container" action="/minha-ficha/{{sheet.id}}?_method=PUT" method="POST">
@@ -253,30 +352,8 @@
                     <label for="origin"><b>Origem</b></label>
                     <input type="text" value="{{sheet.origin}}" name="origin" required disabled>
 
-                    <label for="aspect">Aspecto</label><br>
-                    <select id="aspect" name="aspect" disabled>
-                        <option value="none" selected>Nenhum</option>
-                        <option value="dermossa">Dermossa</option>
-                        <option value="dianceth">Dianceth</option>
-                        <option value="sahari">Sahari</option>
-                        <option value="shenghuo">Sheng-Huo</option>
-                        <option value="ulfihild">Ulfihild</option>
-                    </select><br>
-                    <script type="text/javascript">
-                        const theAspect = '{{sheet.aspect}}'
-                        const aspects = ['dermossa', 'dianceth', 'sahari', 'shenghuo', 'ulfihild']
-                        var select = document.getElementById('aspect');
-
-                        if ( theAspect != 'none' ) {
-                            for(var i = 0; i < select.options.length; i++) {
-                                if( select.options[i].value == theAspect ) {
-                                    select.selectedIndex = i
-                                }
-                            }
-                        } else {
-                            select.selectedIndex = 0
-                        }
-                    </script>
+                    <label for="aspect"><b>Aspect</b></label><br>
+                    <input type="text" value="{{sheet.aspect}}" name="aspect" required disabled>
 
                     <label for="class"><b>Classe</b></label>
                     <input type="text" value="{{sheet.class}}" name="class" required disabled>
@@ -293,8 +370,8 @@
                     <label for="notes"><b>Anotações</b></label>
                     <input type="text" placeholder="Anotações..." value="{{sheet.notes}}" name="notes" disabled>
 
-                    <button id="save-edit" type="submit" class="btn" disabled>Salvar</button>
-                    <button id="close-form" type="button" class="btn cancel" onclick="closeForm()" disabled>Cancelar</button>
+                    <button id="save-sheet" type="submit" class="btn" disabled>Salvar</button>
+                    <button id="close-sheet" type="button" class="btn cancel" onclick="closeForm()" disabled>Cancelar</button>
                 </form>
             </div>
             <script>
@@ -307,8 +384,8 @@
                 }
 
                 var form = document.forms[0],
-                btn1 = document.getElementById('open-form'),
-                btn2 = document.getElementById('close-form')
+                btn1 = document.getElementById('form-sheet'),
+                btn2 = document.getElementById('close-sheet')
 
                 btn1.addEventListener('click', lockForm)
                 btn2.addEventListener('click', lockForm)
@@ -321,7 +398,5 @@
                 }
             </script>
         </div>
-
     </div>
-
 </body>

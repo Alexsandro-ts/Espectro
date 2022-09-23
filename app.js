@@ -91,6 +91,7 @@ const Shield = require('./models/shield')
 
   // Posts
 
+
   app.post('/login', async (req, res) => {
     const data = jwt_decode(req.body.credential)
     var lastId;
@@ -229,7 +230,9 @@ app.post('/loadMP', async (req, res) => {
   })
 })
 
+
   // Gets
+
 
   app.get('/', async (req, res) => {
 
@@ -261,6 +264,7 @@ app.post('/loadMP', async (req, res) => {
       const status = await Status.findOne({ where: { id_sheet: sheet.id } })
       res.render('minhaFicha', {
           sheet: sheet,
+          status: status,
           session: req.session
         })
     } catch {
@@ -285,7 +289,9 @@ app.post('/loadMP', async (req, res) => {
     res.redirect('/login')
   })
 
+
   // Put
+
 
   app.put('/editHP', async (req, res) => {
     const id = req.body.id;
@@ -353,8 +359,6 @@ app.post('/loadMP', async (req, res) => {
       }
     }
   })
-
-
 
   /**
    * POST => Inserir um dado
