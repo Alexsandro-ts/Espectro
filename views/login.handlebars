@@ -1,20 +1,37 @@
 <title>Login</title>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
-<body>
-    <h2>Entra aí nessa bagaça</h2>
-    <div id="g_id_onload"
-        data-client_id="646929813681-117ja9ivmg1a7u5jbp9jhik653sshuge.apps.googleusercontent.com"
-        data-context="signup"
-        data-ux_mode="popup"
-        data-login_uri="http://localhost:4001/login"
-        data-auto_prompt="false">
-    </div>
-    <div class="g_id_signin"
-        data-type="standard"
-        data-shape="pill"
-        data-theme="filled_black"
-        data-text="$ {button.text}"
-        data-size="large"
-        data-logo_alignment="left">
+<style>
+    @media {
+        .container{
+            margin-top: 10%;
+            max-width: min-content;
+            max-height: 50%;
+            align-self: center;
+            align-content: center;
+        }
+    }
+</style>
+<body class="text-light">
+    <div class="container text-center">
+        <div class="row align-items-center">
+            <div class="col">
+                <h2>Faça já seu login!</h2>
+                <div id="g_id_onload"
+                    data-client_id="646929813681-117ja9ivmg1a7u5jbp9jhik653sshuge.apps.googleusercontent.com"
+                    data-context="signup"
+                    data-ux_mode="popup"
+                    data-login_uri="http://localhost:4001/login"
+                    data-auto_prompt="false">
+                </div>
+                <div class="g_id_signin"
+                    data-type="standard"
+                    data-shape="pill"
+                    data-theme="filled_blue"
+                    data-text="$ {button.text}"
+                    data-size="large"
+                    data-logo_alignment="left">
+                </div>
+            </div>
+        </div>
     </div>
 </body>

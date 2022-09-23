@@ -1,7 +1,16 @@
 <title>Home</title>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col text-center">
+            <h3>Minhas Fichas</h3>
+        </div>
+        <div class="col-2 text-end">
+            <b>Logado como: {{session.name}}</b>
+        </div>
+    </div>
+</div>
 <body>
-    <h3>Minhas Fichas</h3>
-    <hr>
+    <hr class="border border-primary border-3 opacity-75">
     {{#each sheet}}
         <li><a href="/minha-ficha/{{id}}">{{name}}</a></li>
     {{/each}}<br>

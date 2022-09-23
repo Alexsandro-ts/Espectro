@@ -6,12 +6,7 @@ const flash = require('connect-flash')
 
 const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
-const bcrypt = require ('bcrypt')
 const jwt_decode = require('jwt-decode')
-const saltRounds = 10
-
-const sequelize = require("sequelize")
-const { Sequelize } = require("sequelize")
 
 var session
 const skills = [
@@ -105,7 +100,7 @@ const Shield = require('./models/shield')
 
     try {
       // tenta sincronizar as tabelas
-      const resultado = await database.sync()
+      await database.sync()
     } catch (error) {
         console.log(error)
     }
@@ -235,8 +230,7 @@ app.post('/loadMP', async (req, res) => {
 
 
   app.get('/', async (req, res) => {
-
-    if ( req.session.userId == null) {
+    if ( req.session.userId == null ) {
       res.redirect('/login')
     } else {
       var sheetData = []
