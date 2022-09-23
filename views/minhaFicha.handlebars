@@ -4,7 +4,6 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script src="/funcao.js"></script>
     {{!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> --}}
     <style>
         {box-sizing: border-box;}
@@ -119,38 +118,97 @@
     <div class="row">
 
         <div class="column">
-            <b>Pontos de Vida&nbsp;</b>
+            <b>Pontos de Vida</b>
             <div id="result">
-                <input id="hp-value" type="number" name="pv" placeholder="0">
-                <button id="clac">Clacular</button>
+                <input id="hp-value" type="number" name="hp" value="0">
+                <button id="calc-hp">Calcular</button>
                 <div class="hp"></div>
+                <script>
+                    $(document).ready(() => {
+                        loadHP()
+                    })
+                    function loadHP() {
+                        $.ajax({
+                            type: "POST",
+                            dataType: "JSON",
+                            url: "/loadHP",
+                            data: {id: '{{sheet.id}}'},
+                            success: (data) => {
+                                var html = ''
+
+                                html = '<div>'+ data.data.current_hp +' / '+ data.data.max_hp +'</div>'
+
+                                $('div.hp').html(html)
+                            }
+                        })
+                    }
+
+                    function editHP(value) {
+                        $.ajax({
+                            type: 'PUT',
+                            dataType: 'JSON',
+                            url: '/editHP',
+                            data: {id: '{{sheet.id}}', value: value},
+                            success: (data) => {
+                                console.log(data.data)
+                                loadHP()
+                            }
+                        })
+                    }
+
+                    $("#calc-hp").click(() => {
+                        editHP($("#hp-value").val())
+                        document.getElementById('hp-value').value = '0'
+                    })
+
+                </script>
+            </div>
+            <b>Pontos de Mana</b>
+            <div id="result">
+                <input id="mp-value" type="number" name="mp" placeholder="0">
+                <button id="calc-mp">Calcular</button>
+                <div class="mp"></div>
+                <script>
+                    $(document).ready(function () {
+                        loadMP()
+                    })
+                    function loadMP() {
+                        $.ajax({
+                            type: "POST",
+                            dataType: "JSON",
+                            url: "/loadMP",
+                            data: {id: '{{sheet.id}}'},
+                            success: function (data) {
+                                var html = ''
+
+                                html = '<div>'+ data.data.current_mp +' / '+ data.data.max_mp +'</div>'
+
+                                $('div.mp').html(html)
+                            }
+                        })
+                    }
+
+                    function editMP(value) {
+                        $.ajax({
+                            type: 'PUT',
+                            dataType: 'JSON',
+                            url: '/editMP',
+                            data: {id: '{{sheet.id}}', value: value},
+                            success: (data) => {
+                                console.log(data.data)
+                                loadMP()
+                            }
+                        })
+                    }
+
+                    $("#calc-mp").click(() => {
+                        editMP($("#mp-value").val())
+                        document.getElementById("mp-value").value = '0'
+                    })
+                </script>
             </div>
             <br>
         </div>
-        <script>
-            $(document).ready(function () {
-                loadHP()
-                function loadHP() {
-                    $.ajax({
-                        type: "POST",
-                        dataType: "JSON",
-                        url: "/editHP",
-                        data: {id: '{{sheet.id}}'},
-                        success: function (data) {
-                            var html = ''
-
-                            html = '<div>'+ data.data.current_hp +' / '+ data.data.max_hp +'</div>'
-
-                            $('div.hp').html(html)
-                        }
-                    })
-                }
-
-                $("#calc").click(function () {
-                    editHP($("#hp-value").val())
-                })
-            })
-        </script>
 
         <div class="column">
             <b>Nome:&nbsp;</b>

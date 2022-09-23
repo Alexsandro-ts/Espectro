@@ -134,10 +134,6 @@ const Shield = require('./models/shield')
     session.userId = lastId
     session.name = data.name
     session.sub = data.sub
-    // console.log('SESSION ', session)
-    // if ( session.sub ) {
-    //   res.send("Welcome User <a href=\'/logout'>click to logout</a>")
-    // }
     res.redirect('/')
   })
 
@@ -215,16 +211,22 @@ const Shield = require('./models/shield')
     }
   })
 
-app.post('/editHP', async (req, res) => {
-
+app.post('/loadHP', async (req, res) => {
   const id = req.body.id;
-
   const results = await Status.findOne({ where: {id_sheet: id}})
 
   res.json({
     data: results
   })
+})
 
+app.post('/loadMP', async (req, res) => {
+  const id = req.body.id;
+  const results = await Status.findOne({ where: {id_sheet: id}})
+
+  res.json({
+    data: results
+  })
 })
 
   // Gets
@@ -268,58 +270,15 @@ app.post('/editHP', async (req, res) => {
           errorMessage: 'Erro ao editar ficha'
         })
     }
-    
-
-
-
-
-    // .then( async () => {
-    //   console.log('cara wtf')
-    //   try {
-    //     status = await Status.findOne({ where: { id_sheet: sheet.id } })
-    //   } catch {
-    //     console.log('então deu erro né?')
-    //       res.render('home', {
-    //       session: req.session,
-    //       sheet: sheetData,
-    //       errorMessage: 'Erro ao editar ficha'
-    //     })
-    //   }
-      // skill = await Skill.findOne({ where: { id_sheet: sheet.id } })
-      // proficiency = await Proficiency.findOne({ where: { id_sheet: sheet.id } })
-      // attack = await Attack.findOne({ where: { id_sheet: sheet.id } })
-      // armor = await Armor.findOne({ where: { id_sheet: sheet.id } })
-      // shield = await Shield.findOne({ where: { id_sheet: sheet.id } })
-      // const ability = await Ability.findOne({ where: { id_sheet: sheet.id } })
-      // const magics = await Magics.findOne({ where: { id_sheet: sheet.id } })
-      // res.render('minhaFicha', {
-      //   sheet: sheet,
-      //   status: status,
-        // skill: skill,
-        // proficiency: proficiency,
-        // attack: attack,
-        // armor: armor,
-        // shield: shield,
-        // ability: ability,
-        // magics: magics,
-    //     session: req.session
-    //   })
-    // }).catch(() => {
-    //   console.log('mano porque')
-    //   res.redirect('/')
-    // })
   })
-
 
   app.get('/cadastra-ficha', (req, res) => {
     res.render('cadFicha', {session: req.session})
   })
 
-
   app.get('/login', (req, res) => {
     res.render('login')
   })
-
 
   app.get('/logout', (req, res) => {
     req.session.destroy();
@@ -327,6 +286,34 @@ app.post('/editHP', async (req, res) => {
   })
 
   // Put
+
+  app.put('/editHP', async (req, res) => {
+    const id = req.body.id;
+    const value = req.body.value;
+
+    try {
+      const status = await Status.findOne({ where: {id_sheet: id}})
+      status.current_hp = status.current_hp + parseInt(value)
+      await status.save()
+      res.json('success')
+    } catch {
+      res.json('fail')
+    }
+  })
+
+  app.put('/editMP', async (req, res) => {
+    const id = req.body.id;
+    const value = req.body.value;
+
+    try {
+      const status = await Status.findOne({ where: {id_sheet: id}})
+      status.current_mp = status.current_mp + parseInt(value)
+      await status.save()
+      res.json('success')
+    } catch {
+      res.json('fail')
+    }
+  })
 
   app.put('/minha-ficha/:id', async (req, res) => {
     let sheet
