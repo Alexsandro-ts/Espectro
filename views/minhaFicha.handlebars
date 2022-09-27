@@ -1,104 +1,212 @@
 <head>
-    <title>Ficha {{sheet.name}}</title>
-    <b>Logado como: {{session.name}}</b>
+    <div class="container-fluid text-end">
+        <b>Logado como: {{session.name}}</b>
+    </div>
+    <input type="text" id="sheetId" value="{{sheet.id}}" hidden></p>
+    <hr class="border border-1 opacity-75">
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    {{!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> --}}
     <style>
-        {box-sizing: border-box;}
-
-        /* Button used to open the contact form - fixed at the bottom of the page */
-        .open-button {
-            background-color: #555;
-            color: white;
-            padding: 16px 20px;
-            border: none;
-            cursor: pointer;
-            opacity: 0.8;
-            position: fixed;
+        .progress-bar-hp {
+            background-color: #00ff77;
         }
-
-        /* The popup form - hidden by default */
-        .form-popup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);S
-            margin: auto;
-            border: 3px solid #f1f1f1;
-            z-index: 9;
+        .btn-hp {
+            background-color: #00ff77;
         }
-
-        /* Add styles to the form container */
-        .form-container {
-            max-width: 500px;
-            padding: 10px;
-            background-color: white;
+        .progress-bar-mp {
+            background-color: fuchsia;
         }
-
-        /* Full-width input fields */
-        .form-container input[type=text], .form-container input[type=password] {
-            width: 100%;
-            padding: 5px;
-            margin: 5px 0 10px 0;
-            border: none;
-            background: #f1f1f1;
+        .btn-mp {
+            background-color: fuchsia;
         }
-
-        /* When the inputs get focus, do something */
-        .form-container input[type=text]:focus, .form-container input[type=password]:focus {
-            background-color: #ddd;
-            outline: none;
-        }
-
-        /* Set a style for the submit/login button */
-        .form-container .btn {
-            background-color: #04AA6D;
-            color: white;
-            padding: 16px 20px;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            margin-bottom:10px;
-            opacity: 0.8;
-        }
-
-        /* Add a red background color to the cancel button */
-        .form-container .cancel {
-            background-color: red;
-        }
-
-        /* Add some hover effects to buttons */
-        .form-container .btn:hover, .open-button:hover {
-            opacity: 1;
-        }
-
-        .column {
-           float: left;
-            width: 33.33%;
-        }
-    </style>
-    <style>
-        @media {
-            .container-fluid {
-                margin-left: 1%;
-                margin-right: 1%;
-            }
-        }
-        .containter-fluid {
-            margin-left: 25px;
+        .calc {
+            width: 100px;
         }
         input[type='number'] {
-            width: 50%;
+            width: 100px;
+        }
+        .row {
+            margin-bottom: 5px;
+        }
+        @media {
+            .col-sm-1 {
+                max-width: 125px;
+            }
         }
     </style>
 </head>
 <body>
-    <h3>Ficha:&nbsp;{{sheet.name}}</h3>
-    <input type="text" id="sheetId" value="{{sheet.id}}" hidden></p>
-    <hr class="border border-primary border-3 opacity-75">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                {{!-- Nome e Nível --}}
+                <div class="row">
+                    <div class="col text-start">
+                        <h4>{{sheet.name}}</h4>
+                    </div>
+                    <div class="col text-end">
+                        <b>Nível:</b>&nbsp;{{sheet.level}}
+                    </div>
+                </div>
+                {{!-- PVs --}}
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col text-start">
+                                <b>Pontos de Vida</b>
+                            </div>
+                            <div class="col-sm-2 text-end">
+                                <div class="hp"></div>
+                            </div>
+                        </div>
+                        {{!-- Progress-Bar --}}
+                        <div class="row">
+                            <div class="col">
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-hp" role="progressbar" style="width: 100%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="{{status.max_hp}}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{!-- Calcula PV --}}
+                    <div class="col-sm-1 text-end">
+                        <input id="hp-value" class="calc" type="number" name="hp" value="0">
+                        <button id="calc-hp" class="btn btn-hp calc"><b>Calcular</b></button>
+                    </div>
+                </div>
+                <script>
+                    $(document).ready(() => {
+                        loadHP()
+                        loadMP()
+                    })
+                    function loadHP() {
+                        $.ajax({
+                            type: "POST",
+                            dataType: "JSON",
+                            url: "/loadStatus",
+                            data: {id: '{{sheet.id}}'},
+                            success: (data) => {
+                                var html = ''
+                                const current_hp = data.data.current_hp
+
+                                html = '<div>'+ current_hp +' / '+ {{status.max_hp}} +'</div>'
+
+                                $('.progress-bar-hp').css('width', ((current_hp/{{status.max_hp}})*100)+'%').attr('aria-valuenow', current_hp);
+
+
+                                $('div.hp').html(html)
+                            }
+                        })
+                    }
+
+                    function editHP(value) {
+                        $.ajax({
+                            type: 'PUT',
+                            dataType: 'JSON',
+                            url: '/editHP',
+                            data: {id: '{{sheet.id}}', value: value},
+                            success: (data) => {
+                                console.log(data.data)
+                                loadHP()
+                            }
+                        })
+                    }
+
+                    $("#calc-hp").click(() => {
+                        editHP($("#hp-value").val())
+                        document.getElementById('hp-value').value = '0'
+                    })
+
+                </script>
+                {{!-- PMs --}}
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col text-start">
+                                <b>Pontos de Mana</b>
+                            </div>
+                            <div class="col-sm-2 text-end">
+                                <div class="mp"></div>
+                            </div>
+                        </div>
+                        {{!-- Progress-Bar --}}
+                        <div class="row">
+                            <div class="col">
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-mp" role="progressbar" style="width: 100%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="{{status.max_mp}}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{!-- Calcula PM --}}
+                    <div class="col-sm-1 text-end">
+                        <input id="mp-value" class="calc" type="number" name="mp" value="0">
+                        <button id="calc-mp" class="btn btn-mp calc"><b>Clacular</b></button>
+                    </div>
+                </div>
+                <script>
+                    $(document).ready(function () {
+                        loadMP()
+                    })
+                    function loadMP() {
+                        $.ajax({
+                            type: "POST",
+                            dataType: "JSON",
+                            url: "/loadStatus",
+                            data: {id: '{{sheet.id}}'},
+                            success: function (data) {
+                                var html = ''
+                                const current_mp = data.data.current_mp
+
+                                html = '<div>'+ current_mp +' / '+ {{status.max_mp}} +'</div>'
+
+                                $('.progress-bar-mp').css('width', ((current_mp/{{status.max_mp}})*100)+'%').attr('aria-valuenow', current_mp);
+
+                                $('div.mp').html(html)
+                            }
+                        })
+                    }
+
+                    function editMP(value) {
+                        $.ajax({
+                            type: 'PUT',
+                            dataType: 'JSON',
+                            url: '/editMP',
+                            data: {id: '{{sheet.id}}', value: value},
+                            success: (data) => {
+                                console.log(data.data)
+                                loadMP()
+                            }
+                        })
+                    }
+
+                    $("#calc-mp").click(() => {
+                        editMP($("#mp-value").val())
+                        document.getElementById("mp-value").value = '0'
+                    })
+                </script>
+                {{!-- CD de Class & Percepção --}}
+                <div class="row text-center">
+                    <div class="col">
+                        <b>CD de Classe</b>
+                        <p>{{status.class_cd}}</p>
+                    </div>
+                    <div class="col">
+                        <b>Percepção</b>
+                        <p>{{status.perception}}</p>
+                    </div>
+                </div>
+            <div>
+            <div class="col">
+                <div class="row">
+                    <b>Informações</b>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container-fluid">
         <div class="row">
             {{!-- Status --}}
@@ -107,92 +215,13 @@
                 <div class="row">
                     <div id="result" class="col-4">
                         <b>Pontos de Vida</b><br>
-                        <input id="hp-value" type="number" name="hp" value="0">
-                        <button id="calc-hp">Calcular</button>
-                        <div class="hp"></div>
-                        <script>
-                            $(document).ready(() => {
-                                loadHP()
-                            })
-                            function loadHP() {
-                                $.ajax({
-                                    type: "POST",
-                                    dataType: "JSON",
-                                    url: "/loadHP",
-                                    data: {id: '{{sheet.id}}'},
-                                    success: (data) => {
-                                        var html = ''
-
-                                        html = '<div>'+ data.data.current_hp +' / '+ data.data.max_hp +'</div>'
-
-                                        $('div.hp').html(html)
-                                    }
-                                })
-                            }
-
-                            function editHP(value) {
-                                $.ajax({
-                                    type: 'PUT',
-                                    dataType: 'JSON',
-                                    url: '/editHP',
-                                    data: {id: '{{sheet.id}}', value: value},
-                                    success: (data) => {
-                                        console.log(data.data)
-                                        loadHP()
-                                    }
-                                })
-                            }
-
-                            $("#calc-hp").click(() => {
-                                editHP($("#hp-value").val())
-                                document.getElementById('hp-value').value = '0'
-                            })
-
-                        </script>
                     </div>
                     <div id="result" class="col-4">
                         <b>Pontos de Mana</b><br>
                         <input id="mp-value" type="number" name="mp" placeholder="0">
                         <button id="calc-mp">Calcular</button>
                         <div class="mp"></div>
-                        <script>
-                            $(document).ready(function () {
-                                loadMP()
-                            })
-                            function loadMP() {
-                                $.ajax({
-                                    type: "POST",
-                                    dataType: "JSON",
-                                    url: "/loadMP",
-                                    data: {id: '{{sheet.id}}'},
-                                    success: function (data) {
-                                        var html = ''
 
-                                        html = '<div>'+ data.data.current_mp +' / '+ data.data.max_mp +'</div>'
-
-                                        $('div.mp').html(html)
-                                    }
-                                })
-                            }
-
-                            function editMP(value) {
-                                $.ajax({
-                                    type: 'PUT',
-                                    dataType: 'JSON',
-                                    url: '/editMP',
-                                    data: {id: '{{sheet.id}}', value: value},
-                                    success: (data) => {
-                                        console.log(data.data)
-                                        loadMP()
-                                    }
-                                })
-                            }
-
-                            $("#calc-mp").click(() => {
-                                editMP($("#mp-value").val())
-                                document.getElementById("mp-value").value = '0'
-                            })
-                        </script>
                     </div>
                 </div>
                 {{!-- Tamanho e Alcance --}}

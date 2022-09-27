@@ -207,16 +207,7 @@ const Shield = require('./models/shield')
     }
   })
 
-app.post('/loadHP', async (req, res) => {
-  const id = req.body.id;
-  const results = await Status.findOne({ where: {id_sheet: id}})
-
-  res.json({
-    data: results
-  })
-})
-
-app.post('/loadMP', async (req, res) => {
+app.post('/loadStatus', async (req, res) => {
   const id = req.body.id;
   const results = await Status.findOne({ where: {id_sheet: id}})
 
@@ -243,7 +234,7 @@ app.post('/loadMP', async (req, res) => {
           sheetData.push(element.dataValues)
         })
       })
-      res.render('home', { session: req.session, sheet: sheetData })
+      res.render('listaFichas', { session: req.session, sheet: sheetData })
     }
   });
 
