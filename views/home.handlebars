@@ -1,18 +1,54 @@
 <title>Home</title>
-<div class="container-fluid">
+<style>
+    @media {
+        .btn{
+            margin-bottom: 7px;
+        }
+    }
+    @media {
+        .wrap {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+    @media {
+        .btn-outline-light:hover {
+            box-shadow: 0px 15px 20px rgba(255, 0, 132, 0.2);
+            transform: translateY(-7px);
+        }
+    }
+    @media {
+        .btn-bd-primary {
+            --bs-btn-color: white;
+            --bs-btn-bg: crimson;
+            --bs-btn-hover-bg: pink;
+            --bs-btn-hover-color: black;
+        }
+    }
+</style>
+<div class="container-fluid text-center">
     <div class="row">
-        <div class="col text-center">
+        <div class="col">
             <h3>Minhas Fichas</h3>
-        </div>
-        <div class="col-2 text-end">
-            <b>Logado como: {{session.name}}</b>
+            <div class="container-sm text-end">
+                <b>Logado como: {{session.name}}</b>
+            </div>
         </div>
     </div>
 </div>
 <body>
-    <hr class="border border-primary border-3 opacity-75">
-    {{#each sheet}}
-        <li><a href="/minha-ficha/{{id}}">{{name}}</a></li>
-    {{/each}}<br>
-    <li><a href="/cadastra-ficha">Criar nova ficha</a></li>
+    <hr class="border border-1 opacity-75">
+    <div class="container-sm text-center">
+        {{#each sheet}}
+        <div class="row">
+                <button type="button" onclick="location.href='/minha-ficha/{{id}}';" class="btn wrap btn-outline-light btn-lg"><i class="bi bi-card-heading"></i>&nbsp;{{name}}</button>
+        </div>
+        {{/each}}
+        <br>
+        <div class="row">
+            <button type="button" onclick="location.href='/cadastra-ficha';" class="btn btn-bd-primary btn-lg"><i class="bi bi-file-plus-fill"></i>&nbsp;Nova Ficha</button>
+        </div>
+    </div>
 </body>
